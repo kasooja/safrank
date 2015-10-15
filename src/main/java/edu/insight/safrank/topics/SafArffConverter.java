@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.insight.safrank.utils.BasicFileTools;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
-import edu.insight.finlaw.utils.BasicFileTools;
 
 public class SafArffConverter {
 

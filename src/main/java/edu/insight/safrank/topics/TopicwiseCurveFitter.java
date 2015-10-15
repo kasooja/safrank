@@ -13,8 +13,8 @@ import java.util.Map;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-import edu.insight.finlaw.utils.BasicFileTools;
 import edu.insight.safrank.curvefitting.GaussianCurveFitterTest;
+import edu.insight.safrank.utils.BasicFileTools;
 
 public class TopicwiseCurveFitter {
 
