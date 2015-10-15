@@ -25,7 +25,10 @@ public class GaussianCurveFitterTest {
 		Double predVal = null;
 		try {
 			predVal = futureTask1.get(4, TimeUnit.SECONDS);
+			futureTask1 = null;
+			callable1 = null;
 			executor.shutdownNow();
+			executor = null;
 		}
 		catch (TimeoutException e) {
 			WeightedObservedPoints obs1 = new WeightedObservedPoints();
@@ -35,28 +38,35 @@ public class GaussianCurveFitterTest {
 					obs1.add(p);
 				}
 			}
+			futureTask1 = null;
+			callable1 = null;
 			executor.shutdownNow();
-			if(obs1.toList().size()>2){
-				return getVal(obs1, targetYear);	
-			} else {		
+			executor = null;
+			if(obs1.toList().size() == obs.toList().size()){
 				return getLinVal(obs, targetYear);
+			} else {
+				if(obs1.toList().size()>2){
+					return getVal(obs1, targetYear);	
+				} else {		
+					return getLinVal(obs, targetYear);
+				}
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
-		
+
 		return predVal;
 	}
 
 
 	public static Double getLinVal(WeightedObservedPoints obs, double targetYear){
 		PolynomialCurveFitter fitter = PolynomialCurveFitter.create(1);
-	//	System.out.println("fitting");
+		//	System.out.println("fitting");
 		double[] bestFit = fitter.fit(obs.toList());
 		PolynomialFunction f = new PolynomialFunction(bestFit);
-	//	System.out.println("done");
+		//	System.out.println("done");
 		double predictSafVal = f.value(targetYear);
 		return predictSafVal;
 	}

@@ -1,6 +1,5 @@
 package edu.insight.safrank.curvefitting;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 public class Test {
 

@@ -28,9 +28,8 @@ package edu.insight.safrank.curvefitting;
 *
 ***************************************************************************************/
 
-import flanagan.io.*;
-import flanagan.math.*;
-import flanagan.plot.*;
+import flanagan.math.FourierTransform;
+import flanagan.plot.PlotGraph;
 
 public class FourierTransformExample{
 
