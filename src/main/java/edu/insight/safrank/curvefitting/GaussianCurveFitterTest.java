@@ -1,14 +1,18 @@
 package edu.insight.safrank.curvefitting;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
+import org.apache.commons.math3.fitting.WeightedObservedPoint;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
+
 import edu.insight.safrank.topics.MyCallable;
 
 public class GaussianCurveFitterTest {
@@ -24,16 +28,19 @@ public class GaussianCurveFitterTest {
 			executor.shutdownNow();
 		}
 		catch (TimeoutException e) {
-//			WeightedObservedPoints obs1 = new WeightedObservedPoints();
-//			List<WeightedObservedPoint> list = obs.toList();
-//			for(WeightedObservedPoint p : list){
-//				if(p.getY()!=0.0){
-//					obs1.add(p);
-//				}
-//			}
-			//return getVal(obs1, targetYear);
+			WeightedObservedPoints obs1 = new WeightedObservedPoints();
+			List<WeightedObservedPoint> list = obs.toList();
+			for(WeightedObservedPoint p : list){
+				if(p.getY()!=0.0){
+					obs1.add(p);
+				}
+			}
 			executor.shutdownNow();
-			return getLinVal(obs, targetYear);
+			if(obs1.toList().size()>2){
+				return getVal(obs1, targetYear);	
+			} else {		
+				return getLinVal(obs, targetYear);
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (ExecutionException e) {
