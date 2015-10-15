@@ -51,7 +51,9 @@ public class TopicwiseCurveFitter {
 		SafDataReader sReader = new SafDataReader();
 		Map<String, Map<Integer, SafTopicData>> topicYearSafDataMap = sReader.getTopicYearSafDataMap(targetYear);
 		Map<String, Double> topicPredicted = new HashMap<String, Double>();
+		int counter = 0;
 		for(String topic : topicYearSafDataMap.keySet()){
+			System.out.println(counter+++"/"+topicYearSafDataMap.size());
 			WeightedObservedPoints obs = new WeightedObservedPoints();
 			Map<Integer, SafTopicData> map = topicYearSafDataMap.get(topic);
 			for(int sY=startYear; sY<targetYear; sY = sY + yearDiff){
@@ -59,7 +61,7 @@ public class TopicwiseCurveFitter {
 				double y = 0.0;
 				if(map.get(sY)!=null){
 					SafTopicData safData = map.get(sY);
-					System.out.println(topic + " " + sY + " " + safData.safVal);
+				//	System.out.println(topic + " " + sY + " " + safData.safVal);
 					y = safData.safVal;
 				}
 				obs.add(x, y);

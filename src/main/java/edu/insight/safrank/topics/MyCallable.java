@@ -19,10 +19,10 @@ public class MyCallable implements Callable<Double> {
 	@Override
 	public Double call() throws Exception {
 		GaussianCurveFitter fitter = GaussianCurveFitter.create();
-		System.out.println("fitting");
+		//System.out.println("fitting");
 		double[] bestFit = fitter.fit(obs.toList());
 		Gaussian f = new Gaussian(bestFit[0], bestFit[1], bestFit[2]);
-		System.out.println("done");
+		//System.out.println("done");
 		double predictSafVal = f.value(predictionYear);
 		return predictSafVal;
 	}

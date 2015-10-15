@@ -46,10 +46,10 @@ public class GaussianCurveFitterTest {
 
 	public static Double getLinVal(WeightedObservedPoints obs, double targetYear){
 		PolynomialCurveFitter fitter = PolynomialCurveFitter.create(1);
-		System.out.println("fitting");
+	//	System.out.println("fitting");
 		double[] bestFit = fitter.fit(obs.toList());
 		PolynomialFunction f = new PolynomialFunction(bestFit);
-		System.out.println("done");
+	//	System.out.println("done");
 		double predictSafVal = f.value(targetYear);
 		return predictSafVal;
 	}
