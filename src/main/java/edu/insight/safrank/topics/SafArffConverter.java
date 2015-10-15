@@ -84,6 +84,45 @@ public class SafArffConverter {
 		return data;
 	}
 
+
+	public Instances getInstancesCollectiveListRelTopic(List<Map<String, SafTopicData>> listSafData, int targetYearIndex, int pastYears) {
+		Instances data = new Instances(instancesName, atts, 0);
+		Set<String> inputTopics = new HashSet<String>();
+		int startIndex = targetYearIndex-pastYears;
+		for(int i=startIndex; i<targetYearIndex; i++){
+			Map<String, SafTopicData> yearSafData = listSafData.get(i);
+			for(String inputTopic : 	yearSafData.keySet()){
+				inputTopics.add(inputTopic);
+			}
+		}
+		for(String topic : inputTopics){
+			vals = new double[data.numAttributes()];
+			int count = 0;
+			SafTopicData targetSafTopicData = listSafData.get(targetYearIndex).get(topic);
+			double targetSafVal = 0.5;
+			if(targetSafTopicData != null)
+				targetSafVal = targetSafTopicData.safVal;
+			vals[count++] = targetSafVal;
+			for(int i=startIndex; i<targetYearIndex; i++){
+				Map<String, SafTopicData> nLastYearSafData = listSafData.get(i);
+				SafTopicData nLastYearSafTopicData = nLastYearSafData.get(topic);
+				double nLastYearSafVal = 0.5;
+				double nLastYearSafRank = 12500;
+				if(nLastYearSafTopicData != null){
+					nLastYearSafVal = nLastYearSafTopicData.safVal;
+					nLastYearSafRank = nLastYearSafTopicData.rankVal;
+				}
+				vals[count++] = nLastYearSafVal;
+				vals[count++] = nLastYearSafRank;
+			}		
+			vals[count++] = data.attribute("topic").addStringValue(topic);
+			Instance instance = new DenseInstance(1.0, vals);				
+			data.add(instance);
+		}	
+		return data;
+	}
+
+
 	public void setAttributes(int pastYears) {
 		targetSafValueAttribute = new Attribute("targetSafVal");
 		atts.add(targetSafValueAttribute);
@@ -123,7 +162,7 @@ public class SafArffConverter {
 				inputTopics.add(inputTopic);
 			}
 		}
-		
+
 		double[] lrMultiples = new double[]{0.2077, 0.0, 0.2929, 0.0, 0.435, 0.0001};
 		double constant = -0.8203;
 		for(String topic : inputTopics){
@@ -295,46 +334,47 @@ public class SafArffConverter {
 			listSafData.set(yearIndex, arffConverter.readData(file));					
 			System.out.println(file.getName());
 		}
-		//		int pastYears = 3;
-		//		int targetYear = 2006;
-		//		int testYear = 2014;
-		//		arffConverter.setAttributes(pastYears);
-		//		arffConverter.overallTrainingData = new Instances(arffConverter.instancesName, arffConverter.atts, 0);
-		//		for(int year=targetYear; year<=arffConverter.endYear; year=year+2){
-		//			String arffFileNameNonFilt = "src/main/resources/arff/SafTarget" + year + ".arff";
-		//			System.out.println(year);
-		//			Instances instances = arffConverter.createInstances(listSafData, year, pastYears, arffFileNameNonFilt);
-		//			if(year!=testYear){
-		//				arffConverter.overallTrainingData.addAll(instances);
-		//			} else {
-		//				System.out.println("test year");
-		//			}
-		//		}
-		//		System.out.println("No. of total training instances: " + arffConverter.overallTrainingData.size());
-		//		ArffSaver saver = new ArffSaver();		
-		//		String totalTrainingArffFileNameNonFilt = "src/main/resources/arff/SafTargetTotal" + ".arff";
-		//		try {
-		//			saver.setInstances(arffConverter.overallTrainingData);
-		//			saver.setFile(new File(totalTrainingArffFileNameNonFilt));		
-		//			saver.writeBatch();
-		//		} catch (IOException e) {
-		//			e.printStackTrace();
-		//		}	
-
-		int outputYear = 2014;
-		int previousYears = 3;
-		Map<String, Double> output = arffConverter.output(listSafData, outputYear, previousYears);
-		System.out.println("done");
-		Map<String, Double> sortedMap = sortByComparator(output);
-
-		StringBuilder results = new StringBuilder();
-		int rank = 1;
-		for(Object topic : sortedMap.keySet()){
-			String topicc = (String) topic;
-			topicc = topicc.replaceAll(",", " ").trim();
-			results.append(topicc + "," + sortedMap.get(topic) + "," + rank++ + "\n");
+		
+		int pastYears = 3;
+		int targetYear = 2006;
+		int testYear = 2014;
+		arffConverter.setAttributes(pastYears);
+		arffConverter.overallTrainingData = new Instances(arffConverter.instancesName, arffConverter.atts, 0);
+		for(int year=targetYear; year<=arffConverter.endYear; year=year+2){
+			String arffFileNameNonFilt = "src/main/resources/arff/SafTarget" + year + ".arff";
+			System.out.println(year);
+			Instances instances = arffConverter.createInstances(listSafData, year, pastYears, arffFileNameNonFilt);
+			if(year!=testYear){
+				arffConverter.overallTrainingData.addAll(instances);
+			} else {
+				System.out.println("test year");
+			}
 		}
-		BasicFileTools.writeFile("src/main/resources/arff/results2014.csv", results.toString().trim());
+		System.out.println("No. of total training instances: " + arffConverter.overallTrainingData.size());
+		ArffSaver saver = new ArffSaver();		
+		String totalTrainingArffFileNameNonFilt = "src/main/resources/arff/SafTargetTotal" + ".arff";
+		try {
+			saver.setInstances(arffConverter.overallTrainingData);
+			saver.setFile(new File(totalTrainingArffFileNameNonFilt));		
+			saver.writeBatch();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+
+		//		int outputYear = 2014;
+		//		int previousYears = 3;
+		//		Map<String, Double> output = arffConverter.output(listSafData, outputYear, previousYears);
+		//		System.out.println("done");
+		//		Map<String, Double> sortedMap = sortByComparator(output);
+		//
+		//		StringBuilder results = new StringBuilder();
+		//		int rank = 1;
+		//		for(Object topic : sortedMap.keySet()){
+		//			String topicc = (String) topic;
+		//			topicc = topicc.replaceAll(",", " ").trim();
+		//			results.append(topicc + "," + sortedMap.get(topic) + "," + rank++ + "\n");
+		//		}
+		//		BasicFileTools.writeFile("src/main/resources/arff/results2014.csv", results.toString().trim());
 	}
 
 }

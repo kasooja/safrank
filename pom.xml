@@ -62,13 +62,25 @@
 			<version>3.7.12</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>flanagan</groupId>
+			<artifactId>cf</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/lib/flanagan.jar</systemPath>
+		</dependency>
 
 	</dependencies>
 

@@ -10,5 +10,6 @@ public class SafTopicData {
 	public Map<String, Double> relatedAuthors = new HashMap<String, Double>();
 	public double safVal = -1.0;
 	public double rankVal = -1.0;
+	public double totalSafVal = -1.0;;
 	
 }
